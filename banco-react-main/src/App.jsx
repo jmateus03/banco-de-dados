@@ -78,6 +78,50 @@ export default function App() {
     await supabase.auth.signOut();
   }
 
+  /*-----------------------------------------------Funções do banco-----------------------------------------------*/
+
+  async function buscarTarefas(){
+    const resposta = await supabase
+      .from('tarefas')
+      .select('*')
+      .order('criado_em', { ascending: false } )
+
+    if(resposta.error){
+      alert("a mesma coisa")
+    }
+    else {
+      setTarefas(resposta.data)
+    }
+  }
+
+  async function adicionarTarefa(evento) {
+    if (!titulo) {
+      alert("a mesma coisa")
+      return
+    }
+
+    const resposta = await supabase
+      .from(tarefas)
+      .insert(
+      [
+        {
+          titulo: titulo,
+          descricao: descricao,
+          user_id: user.id
+        }
+      ]
+    )
+    if (resposta.error){
+      alert("a mesma coisa: " + resposta.error.message)
+    }
+    else{
+      setTitulo("")
+      setDescricao("")
+      buscarTarefas()
+    }
+  }
+
+
   if(!user){
     return (
       <div>
